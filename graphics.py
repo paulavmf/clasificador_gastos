@@ -27,3 +27,30 @@ def crear_linea_temporal(df, category = None):
     plt.show()
 
 
+def bar_plot_by_category_from_multy_sheets(dfs,category):
+# Inicializar un diccionario para almacenar los gastos por mes
+    monthly_expenses = {}
+    for sheet_name, df in dfs.items():
+        # Filtrar las filas donde el Tipo de Comercio es "bar"
+        selection_expenses = df[df['Tipo de Comercio'] == category]
+        # Calcular el gasto total para este mes
+        selection_expenses.loc[:, 'IMPORTE'] = selection_expenses['IMPORTE'] * -1
+        total_bar_expenses = selection_expenses['IMPORTE'].sum()
+        # Almacenar el resultado en el diccionario
+        monthly_expenses[sheet_name] = total_bar_expenses
+
+    # Convertir el diccionario a un DataFrame para facilitar la visualización
+    monthly_bar_expenses_df = pd.DataFrame.from_dict(monthly_expenses, orient='index',
+                                                     columns=[f'Total Gasto en {category}'])
+    monthly_bar_expenses_df.index.name = 'Mes'
+    monthly_bar_expenses_df.reset_index(inplace=True)
+
+    # Crear el gráfico de barras
+    plt.figure(figsize=(10, 6))
+    plt.bar(monthly_bar_expenses_df['Mes'], monthly_bar_expenses_df[f'Total Gasto en {category}'], color='blue')
+    plt.xlabel('Mes')
+    plt.ylabel(f'Total Gasto en {category} (€)')
+    plt.title(f'Gasto Mensual en la Categoría "{category}"')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()

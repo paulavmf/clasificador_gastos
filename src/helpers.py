@@ -1,6 +1,7 @@
 import pandas as pd
 from IPython.display import display, HTML
 import json
+import os
 
 
 def clasificar_transacciones(descripcion, categorias):
@@ -52,4 +53,35 @@ def get_categories_from_df(df) -> list:
 
 def filter_df_by_category(df, category_name):
     return df[df['Tipo de Comercio'] == category_name]
+
+def listar_archivos_en_carpeta(carpeta):
+    archivos = [f for f in os.listdir(carpeta) if os.path.isfile(os.path.join(carpeta, f))]
+    archivos_paths = [os.path.join(carpeta, f) for f in archivos]
+    return archivos, archivos_paths
+
+
+# Función para guardar el DataFrame en un archivo Excel y concatenar DataFrames adicionales
+def save_df_by_dates(df_nuevo, archivo='mis_gastos.xlsx'):
+    # Ordenar por fecha
+    df_nuevo['FECHA'] = pd.to_datetime(df_nuevo['FECHA'])
+    df_nuevo = df_nuevo.sort_values(by='FECHA')
+
+    # Obtener el nombre de la hoja basado en el rango de fechas
+    primera_fecha = df_nuevo['FECHA'].min().strftime('%Y-%m-%d')
+    ultima_fecha = df_nuevo['FECHA'].max().strftime('%Y-%m-%d')
+    hoja_nombre = f"{primera_fecha}_a_{ultima_fecha}"
+
+    # Verificar si el archivo Excel ya existe
+    if os.path.exists(archivo) and os.path.getsize(archivo) > 0:
+        try:
+            with pd.ExcelWriter(archivo, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+                df_nuevo.to_excel(writer, index=False, sheet_name=hoja_nombre)
+        except Exception as e:
+            print(f"Error al abrir el archivo existente: {e}")
+    else:
+        with pd.ExcelWriter(archivo, engine='openpyxl') as writer:
+            df_nuevo.to_excel(writer, index=False, sheet_name=hoja_nombre)
+
+    print(f'Datos guardados en la hoja: {hoja_nombre}')
+
 
