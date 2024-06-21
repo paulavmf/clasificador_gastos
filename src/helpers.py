@@ -85,3 +85,11 @@ def save_df_by_dates(df_nuevo, archivo='mis_gastos.xlsx'):
     print(f'Datos guardados en la hoja: {hoja_nombre}')
 
 
+def read_and_concatenate_excel(file):
+    # Leer todas las hojas del archivo Excel en un diccionario de DataFrames
+    df_dict = pd.read_excel(file, sheet_name=None)
+
+    # Concatenar todos los DataFrames en uno solo
+    df_concatenado = pd.concat(df_dict.values(), ignore_index=True)
+
+    return df_concatenado
