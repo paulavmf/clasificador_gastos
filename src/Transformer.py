@@ -1,6 +1,6 @@
 import pandas as pd
 from pandas import DataFrame
-
+import os
 from src.Extractor import DataExtractor
 from src.utils.analyze import correct_and_merge_cc_t
 
@@ -18,6 +18,8 @@ class DataTransformer:
 
     def save_as_csv(self):
         csv_name = self.file.replace('.pdf', '.csv')
+        if os.path.exists(csv_name):
+            print(f'File {csv_name} already exists it will be overwritten')
         self.all_monthly_movements.to_csv(csv_name)
 
     def save_and_transform(self):
