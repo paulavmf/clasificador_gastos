@@ -93,3 +93,15 @@ def read_and_concatenate_excel(file):
     df_concatenado = pd.concat(df_dict.values(), ignore_index=True)
 
     return df_concatenado
+
+def convert_to_float(value):
+    if pd.isna(value):
+        return None
+    elif value == 0:
+        return value
+    value = value.replace('.', '').replace(',', '.')  # Reemplazar ',' por '.' y eliminar '.'
+    return float(value)
+
+def save_as_csv(df, pdf_name):
+    csv_name = pdf_name.replace('.pdf', '.csv')
+    df.to_csv(csv_name)

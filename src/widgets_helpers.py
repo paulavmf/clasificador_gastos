@@ -7,7 +7,7 @@ def on_category_change(change, df):
         bar_plot_by_category_from_multy_sheets(df, change['new'])
 
 
-def file_selector_from_filder(carpeta):
+def file_selector_from_folder(carpeta):
     from src.helpers import listar_archivos_en_carpeta
 
     archivos, archivos_paths = listar_archivos_en_carpeta(carpeta)
@@ -22,4 +22,5 @@ def file_selector_from_filder(carpeta):
 
     # Mostrar el widget Dropdown
     display(dropdown_archivos)
+
     return dropdown_archivos.value

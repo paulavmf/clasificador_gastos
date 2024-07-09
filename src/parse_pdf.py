@@ -1,6 +1,7 @@
 import pdfplumber
 import pandas as pd
 import re
+from src.helpers import convert_to_float
 
 # CONVIERTO EL PDF EN TEXTO PLANO
 def extract_text_from_pdf(pdf_path):
@@ -11,7 +12,7 @@ def extract_text_from_pdf(pdf_path):
         return '\n'.join(text)
 
 def extract_text_from_pdf_first_page(pdf_path):
-    # TODO cuento con que los movimientos de cuetna está todos en una misma página
+    # TODO cuento con que los movimientos de cuenta está todos en una misma página
     text = []
     with pdfplumber.open(pdf_path) as pdf:
         text.append(pdf.pages[0].extract_text())
@@ -55,9 +56,9 @@ def separar_columnas_cc(linea):
     cargo_abono = rest_of_line.split()[-2]
     description = rest_of_line.replace(' '.join([cargo_abono, saldo]), '').strip()
     cargo = cargo_abono
-    abono = None
+    abono = 0
     if parse_abonos(description):
-        cargo = None
+        cargo = 0
         abono = cargo_abono
     return [fecha, ref, fecha_valor, description, cargo, abono, saldo]
 
@@ -71,9 +72,9 @@ def separar_columnas_tajeta(linea):
     cargo_abono = rest_of_line.split()[-1]
     descripcion = rest_of_line.replace(' '.join([cargo_abono]), '').strip()
     cargo = cargo_abono
-    abono = None
+    abono = 0
     if parse_abonos(descripcion):
-        cargo = None
+        cargo = 0
         abono = cargo_abono
     return [fecha, descripcion, cargo, abono]
 
@@ -83,6 +84,8 @@ def convert_transactions_to_df(transacciones):
     df = pd.DataFrame(transacciones, columns=columnas)
     df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce', format='%d-%m-%y')
     df['Fecha Valor'] = pd.to_datetime(df['Fecha Valor'], errors='coerce', format='%d-%m-%y')
+    df['cargo'] = df['cargo'].apply(convert_to_float)
+    df['abono'] = df['abono'].apply(convert_to_float)
     # Convertir las columnas de importe a numérico
     return df
 
@@ -91,6 +94,8 @@ def convert_transactions_tarjeta_to_df(transacciones):
     columnas = ['Fecha', 'Descripción', 'cargo', 'abono']
     df = pd.DataFrame(transacciones, columns=columnas)
     df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce', format='%d-%m-%y')
+    df['cargo'] = df['cargo'].apply(convert_to_float)
+    df['abono'] = df['abono'].apply(convert_to_float)
     # Convertir las columnas de importe a numérico
     return df
 

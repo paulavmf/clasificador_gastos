@@ -16,3 +16,5 @@ mis_gastos.xlsx
 __pycache__/
 
 datos_procesados.csv
+
+extractos/
