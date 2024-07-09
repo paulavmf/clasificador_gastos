@@ -1,7 +1,7 @@
 import pdfplumber
 import pandas as pd
 import re
-from src.helpers import convert_to_float
+from src.utils.helpers import convert_to_float
 
 # CONVIERTO EL PDF EN TEXTO PLANO
 def extract_text_from_pdf(pdf_path):

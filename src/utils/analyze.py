@@ -1,5 +1,5 @@
 import pandas as pd
-from src.helpers import convert_to_float
+from src.utils.helpers import convert_to_float
 
 def correct_cc_df(df):
     # sustrae el cargo por el recibo de la tarjeta y
