@@ -87,6 +87,8 @@ def convert_transactions_to_df(transacciones):
     df['cargo'] = df['cargo'].apply(convert_to_float)
     df['abono'] = df['abono'].apply(convert_to_float)
     # Convertir las columnas de importe a numérico
+    if len(df) == 0:
+        raise ValueError('Ninguna transacción convertida')
     return df
 
 def convert_transactions_tarjeta_to_df(transacciones):
@@ -96,9 +98,9 @@ def convert_transactions_tarjeta_to_df(transacciones):
     df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce', format='%d-%m-%y')
     df['cargo'] = df['cargo'].apply(convert_to_float)
     df['abono'] = df['abono'].apply(convert_to_float)
-    # Convertir las columnas de importe a numérico
+    if len(df) == 0:
+        raise ValueError('Ninguna transacción convertida')
     return df
-
 
 def parse_pdf_text(text: str, separador_columnas):
     #desde el texto plano del pdf parsea a la lista con cada campo

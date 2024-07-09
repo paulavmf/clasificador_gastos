@@ -2,18 +2,22 @@ import pandas as pd
 from pandas import DataFrame
 
 from src.utils.parse_pdf import *
+import os
+
+EXTRACTOS_FOLDER = '/home/paula/Documentos/clasificador_gastos/extractos'
+
 
 class DataExtractor:
-    def __init__(self, month, year):
+    def __init__(self, month, year, source=EXTRACTOS_FOLDER):
         """
         :param month: Mes en español primera lentra en mayúsula
         :param year: año en cuatro dígitos
         :return: lista de transacciones cuentas corrientes
         """
-        self.source = 'extractos/'
+        self.source = source
         self.month = self.validate_month(month)
         self.year = self.validate_year(year)
-        self.file = f"{self.source}Extracto_{self.month}_{self.year}.pdf"
+        self.file = self.validate_file(os.path.join(self.source, f"Extracto_{self.month}_{self.year}.pdf"))
         self.movements_cuenta_corriente = DataFrame()
         self._transactions_cuenta_corriente = []
         self.movements_tarjeta = DataFrame()
@@ -34,6 +38,12 @@ class DataExtractor:
         if not (1900 <= year <= 2100):
             raise ValueError(f"Año inválido: {year}. Debe estar entre 1900 y 2100.")
         return year
+
+    @staticmethod
+    def validate_file(file: str) -> str:
+        if not os.path.isfile(file):
+            raise ValueError(f"No existe el archivo: {file}")
+        return file
 
     @property
     def transactions_cuenta_corriente(self) -> list:
@@ -72,17 +82,3 @@ class DataExtractor:
     def extraer(self):
         self.convert_transactions_cuenta_corriente_to_dataframe()
         self.convert_transactions_tarjeta_to_dataframe()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
