@@ -28,9 +28,9 @@ def extract_text_from_pdf_rest_of_pages(pdf_path):
 def process_text_to_df(text):
     lines = text.split('\n')
     transactions = []
-    for line in lines:
-        if "-24 " in line:  # Ajusta esto según tu formato de fecha
-            transactions.append(line.split(','))
+    for linea in lines:
+        if '-24 ' in linea or '-23 ' in linea:  # Ajusta esto según tu formato de fecha
+            transactions.append(linea.split(','))
         # Crear un DataFrame
     columnas = ['Fecha', 'Descripción', 'Movimiento', 'Importe']
     df = pd.DataFrame(transactions, columns=columnas)
@@ -110,7 +110,7 @@ def parse_pdf_text(text: str, separador_columnas):
     transacciones = []
     for linea in lineas:
         # Asumir que cada línea relevante contiene una fecha en el formato dd-mm-yy
-        if "-24 " in linea:  # Ajusta esto según tu formato de fecha
+        if '-24 ' in linea or '-23 ' in linea: # Ajusta esto según tu formato de fecha
             transacciones.append(separador_columnas(linea))
     return transacciones
 
