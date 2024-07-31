@@ -29,9 +29,16 @@ def initial_saldo(df_cc):
     return saldo
 
 def add_saldo(df, saldo_inicial):
-    # todo esto no es exacto..
-    df['Saldo'] = saldo_inicial - df['cargo'] + df['abono']
+    df['Saldo'] = 0
+    for i in range(len(df)):
+        if i == 0:
+            df.loc[i, 'Saldo'] = saldo_inicial
+        else:
+            df.loc[i, 'Saldo'] = df.loc[i - 1, 'Saldo'] - df.loc[i, 'cargo'] + df.loc[i, 'abono']
+
     return df
+
+
 
 def add_initial_saldo_col(df, df_cc):
     saldo = initial_saldo(df_cc)
