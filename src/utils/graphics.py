@@ -4,7 +4,7 @@ import pandas as pd
 
 # Crear el gráfico de quesos según el Tipo de Comercio
 def crear_grafico_quesos(df):
-    tipo_comercio_counts = df['Tipo de Comercio'].value_counts()
+    tipo_comercio_counts = df['Type'].value_counts()
     plt.figure(figsize=(8, 8))
     plt.pie(tipo_comercio_counts, labels=tipo_comercio_counts.index, autopct='%1.1f%%', startangle=140)
     plt.title('Distribución de Gastos por Tipo de Comercio')
@@ -56,15 +56,15 @@ def bar_plot_by_category_from_multy_sheets(df, category):
 
 def create_multy_bar_diagram(df, stack = False):
     # Asegurarse de que la columna 'FECHA' sea de tipo datetime
-    df['FECHA'] = pd.to_datetime(df['FECHA'])
+    df['Fecha'] = pd.to_datetime(df['Fecha'])
 
-    df.loc[:, 'IMPORTE'] = df['IMPORTE'] * -1
+    # df.loc[:, 'cargo'] = df['IMPORTE'] * -1
 
     # Crear una columna adicional para el mes y año
-    df.loc[:, 'Mes-Año'] = df['FECHA'].dt.to_period('M')
+    df.loc[:, 'Mes-Año'] = df['Fecha'].dt.to_period('M')
 
     # Agrupar los datos por mes y tipo de comercio y sumar los importes
-    df_agrupado = df.groupby(['Mes-Año', 'Tipo de Comercio'])['IMPORTE'].sum().unstack().fillna(0)
+    df_agrupado = df.groupby(['Mes-Año', 'Type'])['cargo'].sum().unstack().fillna(0)
 
     # Crear el diagrama de barras
     df_agrupado.plot(kind='bar', stacked=stack, figsize=(12, 8))
